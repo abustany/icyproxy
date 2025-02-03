@@ -14,6 +14,12 @@
           inherit system overlays;
         };
         rev = if (self ? shortRev) then self.shortRev else "dev";
+        icyproxy = pkgs.buildGoModule {
+          pname = "icyproxy";
+          version = rev;
+          src = pkgs.lib.cleanSource self;
+          vendorHash = null;
+        };
       in
       with pkgs;
       {
@@ -23,7 +29,7 @@
             pkgs.gopls
           ];
 
-	  GOTOOLCHAIN = "local";
+          GOTOOLCHAIN = "local";
 
           shellHook = ''
           export GOPATH="$(realpath .)/.go";
@@ -31,11 +37,15 @@
           '';
         };
 
-        packages.default = pkgs.buildGoModule {
-          pname = "icyproxy";
-          version = rev;
-          src = pkgs.lib.cleanSource self;
-          vendorHash = null;
+        packages.default = icyproxy;
+
+        packages.dockerImage = pkgs.dockerTools.buildLayeredImage {
+          name = "icyproxy";
+          contents = [
+            icyproxy
+            pkgs.dockerTools.caCertificates
+          ];
+          config = { };
         };
       }
     );
