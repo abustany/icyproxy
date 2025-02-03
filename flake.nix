@@ -27,6 +27,7 @@
           buildInputs = [
             pkgs.go
             pkgs.gopls
+            pkgs.skopeo
           ];
 
           GOTOOLCHAIN = "local";
@@ -39,13 +40,19 @@
 
         packages.default = icyproxy;
 
-        packages.dockerImage = pkgs.dockerTools.buildLayeredImage {
+        packages.dockerImage = pkgs.dockerTools.streamLayeredImage {
           name = "icyproxy";
           contents = [
             icyproxy
             pkgs.dockerTools.caCertificates
           ];
-          config = { };
+          config = {
+            Labels = {
+              "org.opencontainers.image.source" = "https://github.com/abustany/icyproxy";
+              "org.opencontainers.image.description" = "Reverse proxy to Inject ICY metadata into audio streams";
+              "org.opencontainers.image.licenses" = "MIT";
+            };
+          };
         };
       }
     );
