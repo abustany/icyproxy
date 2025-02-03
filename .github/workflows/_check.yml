@@ -1,0 +1,38 @@
+name: check
+
+on:
+  workflow_call:
+
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
+    steps:
+      - uses: actions/checkout@v4.2.2
+        with:
+          fetch-depth: 0
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v27
+
+      - name: Run the Magic Nix Cache
+        uses: DeterminateSystems/magic-nix-cache-action@v7
+
+      - name: Setup flake environment
+        run: nix develop -c sleep 0
+        shell: bash
+
+      - name: Check Go format
+        run: nix develop -c ./scripts/check-fmt.sh
+
+      - name: Vet
+        run: nix develop -c go vet ./...
+
+      - name: Test
+        run: nix develop -c go test ./...
+
+      - name: Build
+        run: nix build

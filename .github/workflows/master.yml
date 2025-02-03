@@ -1,0 +1,9 @@
+name: Master
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  check:
+    uses: ./.github/workflows/_check.yml
