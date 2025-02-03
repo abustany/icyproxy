@@ -1,0 +1,7 @@
+{
+	"fip": {
+		"url": "http://icecast.radiofrance.fr/fip-hifi.aac",
+		"metadataJsonUrl": "https://www.radiofrance.fr/fip/api/live",
+		"metadataFormat": "{{.now.firstLine.title}} - {{.now.secondLine.title}}"
+	}
+}
