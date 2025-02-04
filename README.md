@@ -24,6 +24,10 @@ fetches both the audio stream and the metadata, and muxes them together.
 
 ## Installation
 
+### Using Docker
+
+Run `docker run -ti --rm -v /path/to/your/sources.json:/sources.json:ro -p 8080:8080 ghcr.io/abustany/icyproxy:latest icyproxy /sources.json`
+
 ### Using Go
 
 Run `go build -o . ./cmd/icyproxy`
